@@ -35,7 +35,7 @@
 
 bool check_stun( Character *ch, Character *victim ) 
 {
-    if ( IS_AFFECTED(ch,AFF_STUN) )
+    if ( IS_AFFECTED(ch,AFF_STUN) && !ch->isAffected (gsn_power_word_stun) )
     {
         act_p("{WТы оглуше$gно|н|на и не можешь реагировать на атаки $C2.{x",
             ch,0,victim,TO_CHAR,POS_FIGHTING);
@@ -44,7 +44,6 @@ bool check_stun( Character *ch, Character *victim )
         act_p("{W$c1 оглуше$gно|н|на и не может реагировать на атаки.{x",
             ch,0,victim,TO_NOTVICT,POS_FIGHTING);
 
-        affect_strip(ch,gsn_power_word_stun);
         REMOVE_BIT(ch->affected_by,AFF_STUN);        
 
         SET_BIT(ch->affected_by,AFF_WEAK_STUN);

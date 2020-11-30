@@ -165,7 +165,7 @@ bool Command::dispatchOrder( const InterpretArguments &iargs )
         return false;
     }
                     
-    if (IS_AFFECTED( ch, AFF_STUN ) && !getExtra( ).isSet( CMD_KEEP_HIDE )) {
+    if (IS_AFFECTED( ch, AFF_STUN ) && (!getExtra( ).isSet( CMD_KEEP_HIDE ) || getCommandCategory().isSet( CMD_CAT_MOVE ))) {
         ch->send_to( "Ты не в состоянии сделать это.\n\r" );
         return false;
     }

@@ -596,13 +596,13 @@ VOID_SPELL(PowerWordStun)::run( Character *ch, Character *victim, int sn, int le
         af.bitvector.setTable(&affect_flags);
         af.type      = sn;
         af.level     = level;
-        af.duration  = level / 50;
+        af.duration  = 0;
         af.location = APPLY_DEX;
         af.modifier  = -level / 25;
         af.bitvector.setValue(AFF_STUN);
         affect_to_char( victim, &af );
 
-        act("{r$c1 оглуше$gно|н|на{x.",victim, 0, 0,TO_ROOM);
-        act("{RТы оглуше$gно|н|на{x.",victim, 0, 0, TO_CHAR);
+        act("{r$c1 оглуше$gно|н|на и полностью беспомощ$gно|ен|на{x.",victim, 0, 0,TO_ROOM);
+        act("{RТы оглуше$gно|н|на и полностью беспомощ$gно|ен|на{x.",victim, 0, 0, TO_CHAR);
 }
 

@@ -335,7 +335,7 @@ void multi_hit( Character *ch, Character *victim )
 void multi_hit_nocatch( Character *ch, Character *victim )
 {
     /* no attacks for stunnies -- just a check */
-    if ( ch->position < POS_RESTING )
+    if ( ch->position < POS_RESTING || IS_AFFECTED (ch,AFF_STUN))
         return;
 
     /* no attacks on ghosts or attacks by ghosts */
@@ -429,6 +429,10 @@ static inline bool must_not_yell( Character *ch, Character *victim, int flags )
     /* sleeping victims yell only with FYP_SLEEP flag */
     if (!IS_AWAKE(victim) && !IS_SET(flags, FYP_SLEEP))
         return true;
+
+    /* don't yell when power word stunned */
+    if(victim->isAffected(gsn_power_word_stun))
+        return true;
     
     /* players yell always */
     if (!victim->is_npc( ))
@@ -437,7 +441,7 @@ static inline bool must_not_yell( Character *ch, Character *victim, int flags )
     /* in some cases (like murder or shooting) mobs yell always too */
     if (IS_SET(flags, FYP_VICT_ANY))
         return false;
-    
+   
     /* by default mobs are silent */
     return true;
 }
