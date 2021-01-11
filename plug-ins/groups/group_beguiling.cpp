@@ -118,6 +118,8 @@ VOID_SPELL(CharmPerson)::run( Character *ch, Character *victim, int sn, int leve
         if ( ch != victim )
                 act_p("$C1 с обожанием смотрит на тебя.",ch,0,victim,TO_CHAR,POS_RESTING);
 
+        act("Посмотреть список умений последователя: {x{y{hc{lRприк '$n1' умения{lEorder '$n1' skills{x, заклинаний: {x{y{hc{lRприк '$n1' заклинания{lEorder '$n1' spells{x.", ch, victim->getNameP(1).colourStrip().c_str(), 0, TO_CHAR);
+
 }
 
 AFFECT_DECL(CharmPerson);

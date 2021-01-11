@@ -54,7 +54,6 @@ struct AllSkillsList : public std::list<SkillInfo> {
     SkillGroup *group;
     bool fSpells;
     bool (*criteria) ( SkillInfo, SkillInfo );
-    bool fRussian;
     bool charmed = false;
 };
 

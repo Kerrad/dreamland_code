@@ -61,6 +61,8 @@ bool Pet::purchase( Character *client, NPCharacter *keeper, const DLString &argu
     
     act( "В трудную минуту $E поможет тебе!", client, 0, pet, TO_CHAR );
     act( "$c1 приобретает $C4.", client, 0, pet, TO_ROOM );
+    
+    act("Посмотреть список умений последователя: {x{y{hc{lRприк '$n1' умения{lEorder '$n1' skills{x, заклинаний: {x{y{hc{lRприк '$n1' заклинания{lEorder '$n1' spells{x.", client, pet->getNameP(1).colourStrip().c_str(), 0, TO_CHAR);
     return true;
 }
 
