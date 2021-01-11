@@ -9,6 +9,10 @@
 #include "pcharacter.h"
 #include "comm.h"
 
+#include "npcharacter.h"
+#include "../anatolia/handler.h"
+#include "def.h"
+
 /*
  * skills sortby name|level|learned
  * skills <group>
@@ -23,16 +27,17 @@ CMDRUN( skills )
     slist.fSpells = false;
     slist.cmd = getName( );
     slist.rcmd = getRussianName( );
+    slist.charmed = IS_CHARMED(ch) && ch->is_npc() && !ch->master->is_npc(); 
 
     if (!slist.parse( argument, buf, ch )) {
-        ch->send_to( buf );
+        (slist.charmed ? ch->master : ch)->send_to( buf );
         return;
     }
     
     slist.make( ch );
     slist.display( buf );
 
-    page_to_char( buf.str( ).c_str( ), ch );
+    page_to_char( buf.str( ).c_str( ), slist.charmed ? ch->master : ch );
 }
 
 
@@ -47,20 +52,21 @@ CMDRUN( spells )
     AllSkillsList slist;
     std::basic_ostringstream<char> buf;
     DLString argument = constArguments;
-    
+
     slist.fSpells = true;
     slist.cmd = getName( );
     slist.rcmd = getRussianName( );
+    slist.charmed = IS_CHARMED(ch) && ch->is_npc() && !ch->master->is_npc(); 
 
     if (!slist.parse( argument, buf, ch )) {
-        ch->send_to( buf );
+        (slist.charmed ? ch->master : ch)->send_to( buf );
         return;
     }
     
     slist.make( ch );
     slist.display( buf );
 
-    page_to_char( buf.str( ).c_str( ), ch );
+    page_to_char( buf.str( ).c_str( ), slist.charmed ? ch->master : ch );
 }
 
 

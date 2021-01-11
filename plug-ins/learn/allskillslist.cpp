@@ -16,6 +16,8 @@
 #include "mercdb.h"
 #include "def.h"
 
+#include "damageflags.h"
+
 const char * SkillInfo::colorLearned( )
 {
     return color( learned );
@@ -113,7 +115,6 @@ bool AllSkillsList::parse( DLString &argument, std::ostream &buf, Character *ch 
         return false;
     }
 
-    fRussian = ch->getConfig( ).ruskills;
     return true;
 }
 
@@ -131,6 +132,12 @@ void AllSkillsList::make( Character *ch )
         if (fSpells != (spell && spell->isCasted( )))
             continue;
 
+        if(fSpells && charmed &&
+        !(skill->usable( ch, false )
+            && spell->getSpellType( ) != SPELL_OFFENSIVE
+            && skill->getGroup( )->available( ch )))
+            continue;
+
         if (group && skill->getGroup( ) != group)
             continue;
 
@@ -139,14 +146,14 @@ void AllSkillsList::make( Character *ch )
         if (info.level > levHigh || info.level < levLow)
             continue;
 
-        info.name = skill->getNameFor( ch );
+        info.name = skill->getNameFor( charmed ? ch->master : ch );
         info.real = skill->getEffective( ch );
         info.spell = fSpells;
         info.available = skill->available( ch );
         info.maximum = skill->getMaximum( ch );
 
         if (ch->is_npc( )) {
-            info.learned = skill->getLearned( ch );
+            info.learned = charmed && skill->getLearned( ch ) > 100 ? 100 : skill->getLearned( ch );
             info.adept = info.learned;
         }
         else {
