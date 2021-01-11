@@ -57,6 +57,9 @@ void follower_add( Character *ch, Character *mch )
 
     if (ch->master->can_see( ch ) || (ch->master->getPC() && ch->master->getPC()->pet && ch->master->getPC()->pet == ch))
        act( "$c1 теперь следует за тобой.", ch, 0, mch, TO_VICT );
+
+    if(ch->is_npc() && !mch->is_npc())
+    act("Посмотреть список умений последователя: {x{y{hc{lRприк '$n1' умения{lEorder '$n1' skills{x, заклинаний: {x{y{hc{lRприк '$n1' заклинания{lEorder '$n1' spells{x.", mch, ch->getNameP(1).colourStrip().c_str(), 0, TO_CHAR);
        
     act( "Ты теперь следуешь за $C5.",  ch, 0, mch, TO_CHAR );
 }
