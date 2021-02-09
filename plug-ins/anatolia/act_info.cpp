@@ -967,9 +967,77 @@ CMDRUNP(report)
     if (!pet->master || pet->master->is_npc())
         return;
 
+    bool showAll = false;
+
+    if(!arg.empty()){
+
+        if(arg_oneof(arg, "all", "все", "full", "полный")){
+            showAll = true;
+        }
+
+        //report params
+        else if(arg_oneof(arg, "parameters", "stats", "параметры", "статы")){
+        ostringstream result;
+                result << dlprintf( 
+            "Мои параметры: исходные, (текущие)\n\r"
+            "      Сила(Str): %d(%d) Интеллект(Int): %d(%d)\n\r"
+            "  Мудрость(Wis): %d(%d)  Ловкость(Dex): %d(%d)\n\r"
+            "  Сложение(Con): %d(%d)   Обаяние(Cha): %d(%d)\n\r",
+            pet->perm_stat[STAT_STR], pet->getCurrStat(STAT_STR),
+            pet->perm_stat[STAT_INT], pet->getCurrStat(STAT_INT),
+            pet->perm_stat[STAT_WIS], pet->getCurrStat(STAT_WIS),
+            pet->perm_stat[STAT_DEX], pet->getCurrStat(STAT_DEX),
+            pet->perm_stat[STAT_CON], pet->getCurrStat(STAT_CON),
+            pet->perm_stat[STAT_CHA], pet->getCurrStat(STAT_CHA) );
+
+            result << dlprintf( "Я несу {W%d/%d{x вещей с весом {W%d/%d{x фунтов.\n\r",
+                pet->carry_number, pet->canCarryNumber( ),
+                pet->getCarryWeight( )/10, pet->canCarryWeight( )/10 );
+
+                 /* print AC values */
+            result << dlprintf( "Защита от укола {W%d{x, от удара {W%d{x, от разрезания {W%d{x, от экзотики {W%d{x.\n\r",
+            GET_AC(pet,AC_PIERCE),
+            GET_AC(pet,AC_BASH),
+            GET_AC(pet,AC_SLASH),
+            GET_AC(pet,AC_EXOTIC));
+            result << dlprintf( "{lRТочность{lEHitroll{lx: {C%d{x  {lRУрон{lEDamroll{lx: {C%d{x  {lRЗащита от заклинаний{lESaves vs Spell{lx: {C%d{x\n\r",
+                pet->hitroll.getValue( ), pet->damroll.getValue( ), pet->saving_throw.getValue( ) );
+
+            result << dlprintf( "Средняя сила удара без оружия: {C%d{x\n\r", pet->damage[DICE_BONUS] + (pet->damage[DICE_TYPE]+1)*pet->damage[DICE_NUMBER]/2);
+
+            result << dlprintf( "У меня %s натура.  ", align_name( pet ).ruscase( '1' ).c_str( ) );
+
+            result << endl;
+
+            pet->master->send_to( result );
+
+            return;
+            }
+
+            //report affects
+        else if(arg_oneof(arg, "affects", "аффекты", "эффекты")){
+            interpret_raw(pet, "affects");
+            return;
+        }
+
+        else {
+            ostringstream result;
+
+            DLString petName = Syntax::noun(pet->getNameP('1'));
+
+            result << "Параметры команды {lRрапорт{lEreport{x: \n\r"
+                   << fmt(0, "{y{lR{hcприказать %1$s рапорт параметры{lEorder %1$s report parameters{x - покажет параметры, урон, переносимый вес\n\r",petName.c_str())
+                   << fmt(0, "{y{lR{hcприказать %1$s рапорт эффекты{lEorder %1$s report affects{x - покажет, под какими эффектами находится последователь\n\r",petName.c_str())
+                   << fmt(0, "{y{lR{hcприказать %1$s рапорт все{lEorder %1$s report all{x - полный отчет\n\r",petName.c_str());
+
+
+            pet->master->send_to( result );
+            return;
+        }
+    }
+
     vector<Skill::Pointer> skills, skillsFight, spells, passives;
     ostringstream result;
-    bool showAll = arg_oneof(arg, "all", "все", "full", "полный");
     bool shown = false;
 
     for (int sn = 0; sn < SkillManager::getThis()->size(); sn++) {
